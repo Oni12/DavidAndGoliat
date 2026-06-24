@@ -1,0 +1,38 @@
+[
+{
+  "directory": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/David_Goliat.dir/includes_CXX.rsp -g -std=gnu++17 -IC:/msys64/ucrt64/bin/../include -o CMakeFiles\\David_Goliat.dir\\src\\main.cpp.obj -c \"C:\\Users\\ONI\\Documents\\DESARROLLO\\David&Goliat\\src\\main.cpp\"",
+  "file": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/src/main.cpp",
+  "output": "CMakeFiles/David_Goliat.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/David_Goliat.dir/includes_CXX.rsp -g -std=gnu++17 -IC:/msys64/ucrt64/bin/../include -o CMakeFiles\\David_Goliat.dir\\src\\game.cpp.obj -c \"C:\\Users\\ONI\\Documents\\DESARROLLO\\David&Goliat\\src\\game.cpp\"",
+  "file": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/src/game.cpp",
+  "output": "CMakeFiles/David_Goliat.dir/src/game.cpp.obj"
+},
+{
+  "directory": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/David_Goliat.dir/includes_CXX.rsp -g -std=gnu++17 -IC:/msys64/ucrt64/bin/../include -o CMakeFiles\\David_Goliat.dir\\src\\player.cpp.obj -c \"C:\\Users\\ONI\\Documents\\DESARROLLO\\David&Goliat\\src\\player.cpp\"",
+  "file": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/src/player.cpp",
+  "output": "CMakeFiles/David_Goliat.dir/src/player.cpp.obj"
+},
+{
+  "directory": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/David_Goliat.dir/includes_CXX.rsp -g -std=gnu++17 -IC:/msys64/ucrt64/bin/../include -o CMakeFiles\\David_Goliat.dir\\src\\level1.cpp.obj -c \"C:\\Users\\ONI\\Documents\\DESARROLLO\\David&Goliat\\src\\level1.cpp\"",
+  "file": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/src/level1.cpp",
+  "output": "CMakeFiles/David_Goliat.dir/src/level1.cpp.obj"
+},
+{
+  "directory": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/David_Goliat.dir/includes_CXX.rsp -g -std=gnu++17 -IC:/msys64/ucrt64/bin/../include -o CMakeFiles\\David_Goliat.dir\\src\\level2.cpp.obj -c \"C:\\Users\\ONI\\Documents\\DESARROLLO\\David&Goliat\\src\\level2.cpp\"",
+  "file": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/src/level2.cpp",
+  "output": "CMakeFiles/David_Goliat.dir/src/level2.cpp.obj"
+},
+{
+  "directory": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe  @CMakeFiles/David_Goliat.dir/includes_CXX.rsp -g -std=gnu++17 -IC:/msys64/ucrt64/bin/../include -o CMakeFiles\\David_Goliat.dir\\src\\utils.cpp.obj -c \"C:\\Users\\ONI\\Documents\\DESARROLLO\\David&Goliat\\src\\utils.cpp\"",
+  "file": "C:/Users/ONI/Documents/DESARROLLO/David&Goliat/src/utils.cpp",
+  "output": "CMakeFiles/David_Goliat.dir/src/utils.cpp.obj"
+}
+]

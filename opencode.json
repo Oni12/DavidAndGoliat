@@ -1,0 +1,5 @@
+{
+  "permission_rules": [
+    {"permission": "edit", "action": "allow", "pattern": "**"}
+  ]
+}

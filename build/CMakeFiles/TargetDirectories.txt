@@ -1,0 +1,3 @@
+C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build/CMakeFiles/David_Goliat.dir
+C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build/CMakeFiles/edit_cache.dir
+C:/Users/ONI/Documents/DESARROLLO/David&Goliat/build/CMakeFiles/rebuild_cache.dir
