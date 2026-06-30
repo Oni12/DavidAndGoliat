@@ -81,6 +81,13 @@ int main() {
     bool transToMapa = false;
     bool historiaTabActive = false;
     bool cuevaTabActive = false;
+    float menuMusicVolume = 1.0f;
+    float historiaMusicVolume = 1.0f;
+    float dialogMusicVolume = 1.0f;
+    float bossMusicVolume = 1.0f;
+    float victoriaMusicVolume = 1.0f;
+    float defeatMusicVolume = 1.0f;
+    float level3MusicVolume = 1.0f;
 
     for (int i = 0; i < AMMO_MAX; i++) playerProjs[i].active = false;
 
@@ -94,13 +101,65 @@ int main() {
         UpdateMusicStream(level3Music);
         float dt = GetFrameTime();
 
+        {
+            float mT = 0.0f, hT = 0.0f, dT = 0.0f, bT = 0.0f, vT = 0.0f, dfT = 0.0f, l3T = 0.0f;
+            switch (state) {
+                case MENU:             mT = 1.0f; break;
+                case HISTORIA:         hT = 1.0f; break;
+                case INSTRUCCIONES:    mT = 1.0f; break;
+                case NIVEL_1:          dT = 1.0f; break;
+                case NIVEL_1_COMPLETO: dT = 1.0f; break;
+                case MAPA_MUNDI:       hT = 1.0f; break;
+                case NIVEL_2:          bT = 1.0f; break;
+                case VICTORIA:         bT = 1.0f; break;
+                case VICTORIA_HISTORIA: vT = 1.0f; break;
+                case NIVEL_3_INTRO:    l3T = 1.0f; break;
+                case NIVEL_3:          l3T = 1.0f; break;
+                case NIVEL_3_VICTORIA: l3T = 1.0f; break;
+                case NIVEL_3_OUTRO:    l3T = 1.0f; break;
+                case DERROTA:          dfT = 1.0f; break;
+            }
+            float fs = 3.0f;
+            menuMusicVolume    += (mT  - menuMusicVolume)    * dt * fs;
+            historiaMusicVolume += (hT  - historiaMusicVolume) * dt * fs;
+            dialogMusicVolume   += (dT  - dialogMusicVolume)  * dt * fs;
+            bossMusicVolume     += (bT  - bossMusicVolume)    * dt * fs;
+            victoriaMusicVolume += (vT  - victoriaMusicVolume) * dt * fs;
+            defeatMusicVolume   += (dfT - defeatMusicVolume)  * dt * fs;
+            level3MusicVolume   += (l3T - level3MusicVolume)  * dt * fs;
+            SetMusicVolume(menuMusic, menuMusicVolume);
+            SetMusicVolume(historiaMusic, historiaMusicVolume);
+            SetMusicVolume(dialogMusic, dialogMusicVolume);
+            SetMusicVolume(bossMusic, bossMusicVolume);
+            SetMusicVolume(victoriaMusic, victoriaMusicVolume);
+            SetMusicVolume(defeatMusic, defeatMusicVolume);
+            SetMusicVolume(level3Music, level3MusicVolume);
+
+            auto stopIfSilent = [](Music& m, float vol, bool isTarget) {
+                if (vol < 0.01f && !isTarget) { StopMusicStream(m); SeekMusicStream(m, 0.0f); }
+            };
+            bool menuIsT = (state == MENU || state == INSTRUCCIONES);
+            bool histIsT = (state == HISTORIA || state == MAPA_MUNDI);
+            bool dialIsT = (state == NIVEL_1 || state == NIVEL_1_COMPLETO);
+            bool bossIsT = (state == NIVEL_2 || state == VICTORIA);
+            bool victIsT = (state == VICTORIA_HISTORIA);
+            bool defIsT  = (state == DERROTA);
+            bool l3IsT   = (state >= NIVEL_3_INTRO && state <= NIVEL_3_OUTRO);
+            stopIfSilent(menuMusic, menuMusicVolume, menuIsT);
+            stopIfSilent(historiaMusic, historiaMusicVolume, histIsT);
+            stopIfSilent(dialogMusic, dialogMusicVolume, dialIsT);
+            stopIfSilent(bossMusic, bossMusicVolume, bossIsT);
+            stopIfSilent(victoriaMusic, victoriaMusicVolume, victIsT);
+            stopIfSilent(defeatMusic, defeatMusicVolume, defIsT);
+            stopIfSilent(level3Music, level3MusicVolume, l3IsT);
+        }
+
         if (transActive) {
             transAlpha += dt * 2.5f * transDir;
             if (transDir == 1 && transAlpha >= 1.0f) {
                 transAlpha = 1.0f;
                 transDir = -1;
                 if (transToHistoria) {
-                    StopMusicStream(level3Music);
                     PlayMusicStream(historiaMusic);
                     player = CreatePlayer();
                     InitBushes(bushes, BUSH_COUNT);
@@ -113,7 +172,6 @@ int main() {
                     state = HISTORIA;
                     transToHistoria = false;
                 } else if (transToNivel1) {
-                    StopMusicStream(level3Music);
                     PlayMusicStream(dialogMusic);
                     lvl1Dialog = true;
                     lvl1DialogPage = 0;
@@ -121,7 +179,6 @@ int main() {
                     state = NIVEL_1;
                     transToNivel1 = false;
                 } else if (transToLevel2) {
-                    StopMusicStream(dialogMusic);
                     PlayMusicStream(bossMusic);
                     player.hp = player.maxHp;
                     player.ammo = AMMO_MAX;
@@ -129,13 +186,11 @@ int main() {
                     state = NIVEL_2;
                     transToLevel2 = false;
                 } else if (transToVicHist) {
-                    StopMusicStream(bossMusic);
                     PlayMusicStream(victoriaMusic);
                     victoriaPage = 0;
                     state = VICTORIA_HISTORIA;
                     transToVicHist = false;
                 } else if (transToNivel3Intro) {
-                    StopMusicStream(victoriaMusic);
                     PlayMusicStream(level3Music);
                     nivel3Page = 0;
                     state = NIVEL_3_INTRO;
@@ -157,6 +212,7 @@ int main() {
                     state = NIVEL_3_OUTRO;
                     transToNivel3Outro = false;
                 } else if (transToMapa) {
+                    PlayMusicStream(historiaMusic);
                     mapaProgress = 0.0f;
                     mapaArrived = false;
                     state = MAPA_MUNDI;
@@ -197,6 +253,7 @@ int main() {
                 if (IsKeyPressed(KEY_ENTER)) {
                     historiaPage++;
                     if (historiaPage >= 5) {
+                        historiaPage = 0;
                         transActive = true;
                         transDir = 1;
                         transAlpha = 0.0f;
@@ -264,7 +321,7 @@ int main() {
                     player.invulnTimer = 1.5f;
                     float pushDir = (player.x - goliath.x < 0) ? -40.0f : 40.0f;
                     player.x += pushDir;
-                    if (player.hp <= 0) { StopMusicStream(bossMusic); PlayMusicStream(defeatMusic); state = DERROTA; break; }
+                    if (player.hp <= 0) { PlayMusicStream(defeatMusic); state = DERROTA; break; }
                 }
 
                 if (IsKeyPressed(KEY_SPACE) && player.ammo > 0 && player.shootCooldown <= 0) {
@@ -320,7 +377,7 @@ int main() {
                             player.hp--;
                             player.invulnTimer = 1.5f;
                             goliath.projectiles[i].active = false;
-                            if (player.hp <= 0) { StopMusicStream(bossMusic); PlayMusicStream(defeatMusic); state = DERROTA; break; }
+                            if (player.hp <= 0) { PlayMusicStream(defeatMusic); state = DERROTA; break; }
                         }
                     }
                 }
@@ -329,7 +386,7 @@ int main() {
                     bool anyActive = false;
                     for (int i = 0; i < AMMO_MAX; i++)
                         if (playerProjs[i].active) { anyActive = true; break; }
-                    if (!anyActive) { StopMusicStream(bossMusic); PlayMusicStream(defeatMusic); state = DERROTA; }
+                    if (!anyActive) { PlayMusicStream(defeatMusic); state = DERROTA; }
                 }
                 break;
             }
@@ -477,7 +534,6 @@ int main() {
                     float pushDir = (jonathan.x - giant2.x < 0) ? -50.0f : 50.0f;
                     jonathan.x += pushDir;
                     if (jonathan.hp <= 0) {
-                        StopMusicStream(level3Music);
                         PlayMusicStream(defeatMusic);
                         state = DERROTA;
                         break;
@@ -507,7 +563,6 @@ int main() {
                             jonathan.invulnTimer = 1.5f;
                             giant2.projectiles[i].active = false;
                             if (jonathan.hp <= 0) {
-                                StopMusicStream(level3Music);
                                 PlayMusicStream(defeatMusic);
                                 state = DERROTA;
                                 break;
@@ -531,7 +586,6 @@ int main() {
                 if (IsKeyPressed(KEY_ENTER)) {
                     nivel3Page++;
                     if (nivel3Page >= 3) {
-                        StopMusicStream(level3Music);
                         PlayMusicStream(menuMusic);
                         state = MENU;
                     }
@@ -540,10 +594,6 @@ int main() {
 
             case DERROTA:
                 if (IsKeyPressed(KEY_ENTER)) {
-                    StopMusicStream(historiaMusic);
-                    StopMusicStream(bossMusic);
-                    StopMusicStream(defeatMusic);
-                    StopMusicStream(level3Music);
                     PlayMusicStream(menuMusic);
                     state = MENU;
                 }
@@ -559,7 +609,7 @@ int main() {
                 break;
 
             case HISTORIA:
-                DrawHistoria(historiaPage, 6);
+                DrawHistoria(historiaPage, 5);
                 break;
 
             case INSTRUCCIONES:

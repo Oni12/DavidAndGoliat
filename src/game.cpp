@@ -114,22 +114,19 @@ void DrawHistoria(int page, int totalPages) {
     DrawText("La Unción de David", SCREEN_WIDTH / 2 - MeasureText("La Unción de David", 30) / 2, 50, 30, COL_GOLD);
     DrawLine(SCREEN_WIDTH / 2 - 120, 90, SCREEN_WIDTH / 2 + 120, 90, COL_GOLD);
 
-    const char* textos[6];
+    const char* textos[5];
     textos[0] = "\"Y aconteció que cuando ellos vinieron, él vio a\nEliab, y dijo: De cierto delante de Jehová está\nsu ungido... E hizo pasar Isaí sus siete hijos\ndelante de Samuel; pero Samuel dijo a Isaí:\nJehová no ha elegido a éstos.\"\n(1 Samuel 16:6, 10)";
     textos[1] = "\"Entonces dijo Samuel a Isaí: ¿Se han acabado\ntus jóvenes? Y él respondió: Queda aún el menor,\nque apacienta las ovejas... Y Jehová dijo:\nLevántate y úngelo, porque éste es.\"\n(1 Samuel 16:11, 12)";
     textos[2] = "\"Salió entonces del campamento de los filisteos un\npaladín, el cual se llamaba Goliat, de Gat, y\ntenía de altura seis codos y un palmo... Y se\nparaba y daba voces a los escuadrones de\nIsrael... Viendo Saúl y todo Israel estas\npalabras del filisteo, se turbaron y tuvieron\ngran miedo.\"\n(1 Samuel 17:4, 8, 11)";
     textos[3] = "\"Entonces habló David a los que estaban junto a\nél, diciendo: ¿Qué harán al hombre que venciere\na este filisteo, y quitare el oprobio de Israel?\nPorque ¿quién es este filisteo incircunciso, para\nque provoque a los escuadrones del Dios\nviviente?... Y dijo Saúl a David: Ve, y Jehová\nesté contigo.\"\n(1 Samuel 17:26, 37)";
     textos[4] = "\"David se dio prisa, y corrió a la línea de batalla\ncontra el filisteo. Y metiendo David su mano en\nla bolsa, tomó de allí una piedra, y la tiró con\nla honda...\"\n(1 Samuel 17:48, 49)\n\n¡Ayúdalo a vencer a Goliat!";
-    textos[5] = "";
 
     DrawText(textos[page], SCREEN_WIDTH / 2 - MeasureText(textos[page], 20) / 2, 140, 20, (Color){ 255, 247, 231, 220 });
-    if (page < totalPages - 1) {
-        DrawText(TextFormat("Pagina %d/%d", page + 1, totalPages),
-            SCREEN_WIDTH / 2 - 30, 540, 16, (Color){ 140, 130, 120, 255 });
-        DrawText("Presiona ENTER para continuar",
-            SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para continuar", 14) / 2,
-            565, 14, COL_GOLD);
-    }
+    DrawText(TextFormat("Pagina %d/%d", page + 1, totalPages),
+        SCREEN_WIDTH / 2 - 30, 540, 16, (Color){ 140, 130, 120, 255 });
+    DrawText("Presiona ENTER para continuar",
+        SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para continuar", 14) / 2,
+        565, 14, COL_GOLD);
 }
 
 void DrawVictoriaHistoria(int page, int totalPages) {
