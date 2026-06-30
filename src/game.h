@@ -5,7 +5,14 @@
 #define SCREEN_HEIGHT 600
 
 #define PLAYER_SPEED 3.0f
-#define PLAYER_MAX_HP 5
+
+// === VIDA DE LOS PERSONAJES ===
+#define PLAYER_MAX_HP 5    // David (Niveles 1 y 2)
+#define JONATHAN_MAX_HP 5  // Jonathan (Nivel 3)
+
+// GIGANTES
+#define GOLIATH_HP 1       // Goliat (Nivel 2)
+#define GIANT2_HP 3        // Gigante filisteo (Nivel 3)
 
 #define STONES_TOTAL 7
 #define STONES_NEEDED 5
@@ -22,13 +29,11 @@
 #define GIANT2_SPEED 0.8f
 #define GIANT2_SHOOT_INTERVAL 4.0f
 #define GIANT2_PROJ_SPEED 3.5f
-#define GIANT2_HP 3
 #define GIANT2_PROJ_MAX 8
 #define GIANT2_MELEE_RANGE 80
 #define GIANT2_MELEE_COOLDOWN 2.5f
 
 #define JONATHAN_SPEED 3.5f
-#define JONATHAN_MAX_HP 5
 
 #define PLAYER_COL_W 20
 #define PLAYER_COL_H 24

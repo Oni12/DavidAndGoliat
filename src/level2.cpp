@@ -192,7 +192,7 @@ Goliath CreateGoliath() {
     Goliath g;
     g.x = 700.0f;
     g.y = 300.0f;
-    g.hp = 1;
+    g.hp = GOLIATH_HP;
     g.speed = GOLIATH_SPEED;
     g.shootTimer = GOLIATH_SHOOT_INTERVAL;
     g.animTimer = 0.0f;

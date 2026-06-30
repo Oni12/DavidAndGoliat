@@ -4,15 +4,43 @@ Proyecto Final - Programacion Grafica (DIS414)
 
 Videojuego 2D basado en la historia biblica de David y Goliat, desarrollado con Raylib 5.0 y C++.
 
-## Requisitos
+## Requisitos previos
 
-- MSYS2 MinGW-w64 (ucrt64)
-- Raylib 5.0
-- OpenGL32, GDI32, WinMM
+- [MSYS2](https://www.msys2.org/) instalado en `C:\msys64`
+- Abrir **UCRT64** desde el menu de inicio de MSYS2
+
+Dentro de la terminal UCRT64, instalar los paquetes necesarios:
+
+```bash
+pacman -S mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-raylib
+```
 
 ## Compilacion
 
-Ejecutar `build.bat` en la raiz del proyecto.
+Clonar el repositorio y entrar a la carpeta:
+
+```bash
+git clone https://github.com/Oni12/DavidAndGoliat.git
+cd DavidAndGoliat
+```
+
+Compilar con un solo comando:
+
+```bash
+g++ src/main.cpp src/game.cpp src/player.cpp src/level1.cpp src/level2.cpp src/level3.cpp src/tiles.cpp src/utils.cpp -o "MiProyecto.exe" -I"C:/msys64/ucrt64/include" -L"C:/msys64/ucrt64/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -std=c++17
+```
+
+O ejecutar directamente el archivo `build.bat` incluido en el repositorio:
+
+```bash
+./build.bat
+```
+
+## Ejecutar
+
+```bash
+./MiProyecto.exe
+```
 
 ## Niveles
 
