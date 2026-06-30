@@ -181,13 +181,10 @@ int main() {
                 }
                 if (IsKeyPressed(KEY_ENTER)) {
                     if (menuSelection == 0) {
-                        StopMusicStream(menuMusic);
-                        PlayMusicStream(level3Music);
-                        mapaPathIndex = 0;
-                        nextAfterMap = 0;
-                        mapaProgress = 0.0f;
-                        mapaArrived = false;
-                        state = MAPA_MUNDI;
+                        transActive = true;
+                        transDir = 1;
+                        transAlpha = 0.0f;
+                        transToHistoria = true;
                     } else if (menuSelection == 1) {
                         state = INSTRUCCIONES;
                     } else if (menuSelection == 2) {
