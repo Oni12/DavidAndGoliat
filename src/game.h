@@ -20,10 +20,12 @@
 #define GOLIATH_HITBOX_H 60
 
 #define GIANT2_SPEED 0.8f
-#define GIANT2_SHOOT_INTERVAL 2.0f
+#define GIANT2_SHOOT_INTERVAL 4.0f
 #define GIANT2_PROJ_SPEED 3.5f
 #define GIANT2_HP 3
 #define GIANT2_PROJ_MAX 8
+#define GIANT2_MELEE_RANGE 80
+#define GIANT2_MELEE_COOLDOWN 2.5f
 
 #define JONATHAN_SPEED 3.5f
 #define JONATHAN_MAX_HP 5
@@ -52,7 +54,7 @@ void DrawVictoriaHistoria(int page, int totalPages);
 void DrawNivel3Intro(int page, int totalPages);
 void DrawNivel3Outro(int page, int totalPages);
 void DrawNivel3Victory(int score);
-void DrawHUDLevel3(int hp, int maxHp);
+void DrawHUDLevel3(int hp, int maxHp, int giantHp, int giantMaxHp);
 void DrawMapaMundi(int pathIndex, float progress, bool arrived);
 void DrawInstrucciones();
 Texture2D CreateDavidPortrait();

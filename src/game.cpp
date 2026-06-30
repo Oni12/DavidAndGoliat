@@ -204,11 +204,14 @@ void DrawNivel3Victory(int score) {
         SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para ver la historia final", 12) / 2, 340, 12, (Color){ 140, 130, 120, 255 });
 }
 
-void DrawHUDLevel3(int hp, int maxHp) {
+void DrawHUDLevel3(int hp, int maxHp, int giantHp, int giantMaxHp) {
     DrawRectangle(0, 0, SCREEN_WIDTH, 30, (Color){ 20, 22, 35, 220 });
     DrawRectangle(0, 28, SCREEN_WIDTH, 2, COL_GOLD);
     DrawText("Nivel 3 - La Fortaleza de Gat", SCREEN_WIDTH / 2 - 120, 7, 12, COL_GOLD);
-    DrawHealthBar(10, 7, hp, maxHp);
+    DrawText("David", 10, 30, 10, (Color){ 245, 240, 230, 200 });
+    DrawHealthBar(45, 7, hp, maxHp);
+    DrawText("Gigante", SCREEN_WIDTH - 170, 7, 10, (Color){ 245, 240, 230, 200 });
+    DrawHealthBar(SCREEN_WIDTH - 130, 7, giantHp, giantMaxHp);
 }
 
 // ---- Terrain texture for world map ----
@@ -570,8 +573,8 @@ void DrawInstrucciones() {
         if (lines[i][0] == '\0') continue;
         DrawText(lines[i], SCREEN_WIDTH / 2 - MeasureText(lines[i], 16) / 2, 160 + i * 30, 16, (Color){ 255, 247, 231, 220 });
     }
-    DrawText("Presiona ENTER o ESC para volver",
-        SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER o ESC para volver", 14) / 2,
+    DrawText("Presiona ENTER para volver",
+        SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para volver", 14) / 2,
         480, 14, (Color){ 210, 170, 40, 200 });
 }
 

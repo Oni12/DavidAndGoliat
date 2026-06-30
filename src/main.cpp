@@ -263,7 +263,7 @@ int main() {
                 break;
 
             case INSTRUCCIONES:
-                if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
+                if (IsKeyPressed(KEY_ENTER)) {
                     state = MENU;
                 }
                 break;
@@ -427,7 +427,7 @@ int main() {
 
             case MAPA_MUNDI:
                 if (historiaTabActive) {
-                    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
+                    if (IsKeyPressed(KEY_ENTER)) {
                         historiaTabActive = false;
                     }
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -442,7 +442,7 @@ int main() {
                     break;
                 }
                 if (cuevaTabActive) {
-                    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
+                    if (IsKeyPressed(KEY_ENTER)) {
                         cuevaTabActive = false;
                     }
                     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
@@ -516,7 +516,6 @@ int main() {
                 ataqueCooldown -= dt;
                 if (ataqueFlashTimer > 0) ataqueFlashTimer -= dt;
 
-                float prevX = jonathan.x, prevY = jonathan.y;
                 UpdatePlayer(jonathan);
 
                 jonathan.x = (jonathan.x < 20) ? 20 : (jonathan.x > SCREEN_WIDTH - 20) ? SCREEN_WIDTH - 20 : jonathan.x;
@@ -525,13 +524,14 @@ int main() {
 
                 UpdateGiant2(giant2, jonathan.x, jonathan.y, dt);
 
-                Rectangle jr = { jonathan.x - PLAYER_COL_W/2, jonathan.y - PLAYER_COL_H/2, PLAYER_COL_W, PLAYER_COL_H };
-                Rectangle gr = { giant2.x - 28, giant2.y - 30, 56, 60 };
+                float distToGiant = sqrtf((jonathan.x - giant2.x) * (jonathan.x - giant2.x) +
+                                          (jonathan.y - giant2.y) * (jonathan.y - giant2.y));
 
-                if (CheckCollisionRecs(jr, gr) && jonathan.invulnTimer <= 0) {
+                // Giant melee attack
+                if (giant2.meleeActive && distToGiant < GIANT2_MELEE_RANGE && jonathan.invulnTimer <= 0) {
                     jonathan.hp--;
                     jonathan.invulnTimer = 1.5f;
-                    float pushDir = (jonathan.x - giant2.x < 0) ? -50.0f : 50.0f;
+                    float pushDir = (jonathan.x - giant2.x < 0) ? -60.0f : 60.0f;
                     jonathan.x += pushDir;
                     if (jonathan.hp <= 0) {
                         PlayMusicStream(defeatMusic);
@@ -540,12 +540,12 @@ int main() {
                     }
                 }
 
+                // Player sword attack
                 if (IsKeyPressed(KEY_SPACE) && ataqueCooldown <= 0) {
-                    float dist = sqrtf((jonathan.x - giant2.x) * (jonathan.x - giant2.x) + (jonathan.y - giant2.y) * (jonathan.y - giant2.y));
-                    if (dist < 55.0f) {
+                    ataqueCooldown = 0.5f;
+                    ataqueFlashTimer = 0.25f;
+                    if (distToGiant < 55.0f) {
                         giant2.hp--;
-                        ataqueCooldown = 0.5f;
-                        ataqueFlashTimer = 0.15f;
                         score += 200;
                         if (giant2.hp <= 0) {
                             score += 500;
@@ -555,9 +555,11 @@ int main() {
                     }
                 }
 
+                // Giant projectiles
                 for (int i = 0; i < GIANT2_PROJ_MAX; i++) {
                     if (giant2.projectiles[i].active) {
                         Rectangle gpr = { giant2.projectiles[i].x - 5, giant2.projectiles[i].y - 5, 10, 10 };
+                        Rectangle jr = { jonathan.x - PLAYER_COL_W/2, jonathan.y - PLAYER_COL_H/2, PLAYER_COL_W, PLAYER_COL_H };
                         if (CheckCollisionRecs(gpr, jr) && jonathan.invulnTimer <= 0) {
                             jonathan.hp--;
                             jonathan.invulnTimer = 1.5f;
@@ -722,7 +724,7 @@ int main() {
                         DrawTexturePro(gatImg, gSrc, gDst, (Vector2){ 0, 0 }, 0, WHITE);
                     }
                     DrawText("https://www.youtube.com/watch?v=k-heTusuUx0", SCREEN_WIDTH / 2 - 166, 480, 14, (Color){ 60, 100, 200, 255 });
-                    DrawText("Presiona ENTER o ESC para cerrar", SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER o ESC para cerrar", 14) / 2, 520, 14, (Color){ 214, 181, 95, 255 });
+                    DrawText("Presiona ENTER para cerrar", SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para cerrar", 14) / 2, 520, 14, (Color){ 214, 181, 95, 255 });
                 }
                 if (cuevaTabActive) {
                     DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 200 });
@@ -740,7 +742,7 @@ int main() {
                         DrawTexturePro(cuevaImg, cvSrc, cvDst, (Vector2){ 0, 0 }, 0, WHITE);
                     }
                     DrawText("https://www.youtube.com/watch?v=-lWtpuh4XWo", SCREEN_WIDTH / 2 - 166, 480, 14, (Color){ 60, 100, 200, 255 });
-                    DrawText("Presiona ENTER o ESC para cerrar", SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER o ESC para cerrar", 14) / 2, 520, 14, (Color){ 214, 181, 95, 255 });
+                    DrawText("Presiona ENTER para cerrar", SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para cerrar", 14) / 2, 520, 14, (Color){ 214, 181, 95, 255 });
                 }
                 break;
 
@@ -756,14 +758,31 @@ int main() {
                 if (ataqueFlashTimer > 0) {
                     float swordX = jonathan.x + ((jonathan.dir == DIR_RIGHT) ? 20 : (jonathan.dir == DIR_LEFT) ? -20 : 0);
                     float swordY = jonathan.y + ((jonathan.dir == DIR_DOWN) ? 10 : (jonathan.dir == DIR_UP) ? -10 : 0);
-                    utils::DrawCircleMidpointFill((int)swordX, (int)swordY, 14, (Color){ 255, 255, 220, 120 });
-                    utils::DrawCircleMidpoint((int)swordX, (int)swordY, 14, (Color){ 255, 210, 50, 200 });
+                    float progress = ataqueFlashTimer / 0.25f;
+                    int radius = (int)(10 + (1.0f - progress) * 20);
+                    Color fill = { 255, 255, 220, (unsigned char)(80 + (1.0f - progress) * 100) };
+                    Color border = { 255, 210, 50, (unsigned char)(150 + (1.0f - progress) * 100) };
+                    utils::DrawCircleMidpointFill((int)swordX, (int)swordY, radius, fill);
+                    utils::DrawCircleMidpoint((int)swordX, (int)swordY, radius, border);
                     DrawLine((int)jonathan.x, (int)jonathan.y, (int)swordX, (int)swordY, (Color){ 255, 255, 220, 100 });
+                    DrawRing((Vector2){ jonathan.x, jonathan.y }, 18.0f, 30.0f,
+                        (jonathan.dir == DIR_RIGHT) ? -45.0f : (jonathan.dir == DIR_LEFT) ? 135.0f :
+                        (jonathan.dir == DIR_UP) ? 225.0f : 45.0f,
+                        (jonathan.dir == DIR_RIGHT) ? 45.0f : (jonathan.dir == DIR_LEFT) ? 225.0f :
+                        (jonathan.dir == DIR_UP) ? 315.0f : 135.0f,
+                        12, fill);
                 }
 
-                DrawGiant2(giant2);
+                DrawGiant2(giant2, jonathan.x, jonathan.y);
 
-                DrawHUDLevel3(jonathan.hp, jonathan.maxHp);
+                if (jonathan.invulnTimer > 0) {
+                    float flash = fmodf(jonathan.invulnTimer * 10.0f, 2.0f);
+                    if (flash < 1.0f) {
+                        DrawCircle((int)jonathan.x, (int)jonathan.y, 16.0f, (Color){ 255, 50, 50, 100 });
+                    }
+                }
+
+                DrawHUDLevel3(jonathan.hp, jonathan.maxHp, giant2.hp, GIANT2_HP);
                 DrawText("Presiona ESPACIO para atacar con la espada",
                     SCREEN_WIDTH / 2 - 180, SCREEN_HEIGHT - 22, 14, (Color){ 245, 240, 230, 200 });
                 break;

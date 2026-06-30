@@ -17,11 +17,14 @@ typedef struct {
     float shootTimer;
     Giant2Proj projectiles[GIANT2_PROJ_MAX];
     float animTimer;
+    float meleeTimer;
+    float meleeAnimTimer;
+    bool meleeActive;
 } Giant2;
 
 extern const int lvl3Map[MAP_H][MAP_W];
 
 Giant2 CreateGiant2();
 void UpdateGiant2(Giant2& g, float tx, float ty, float dt);
-void DrawGiant2(const Giant2& g);
+void DrawGiant2(const Giant2& g, float playerX, float playerY);
 void DrawLevel3Background();

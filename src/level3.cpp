@@ -258,6 +258,9 @@ Giant2 CreateGiant2() {
     g.speed = GIANT2_SPEED;
     g.shootTimer = GIANT2_SHOOT_INTERVAL;
     g.animTimer = 0.0f;
+    g.meleeTimer = 0.0f;
+    g.meleeAnimTimer = 0.0f;
+    g.meleeActive = false;
     for (int i = 0; i < GIANT2_PROJ_MAX; i++)
         g.projectiles[i].active = false;
     return g;
@@ -284,6 +287,19 @@ void UpdateGiant2(Giant2& g, float tx, float ty, float dt) {
 
     g.animTimer += dt;
     g.shootTimer -= dt;
+
+    g.meleeTimer -= dt;
+    g.meleeAnimTimer -= dt;
+    if (g.meleeAnimTimer <= 0.0f) g.meleeActive = false;
+
+    // Melee attack when player is within range
+    if (dist < GIANT2_MELEE_RANGE && g.meleeTimer <= 0.0f) {
+        g.meleeTimer = GIANT2_MELEE_COOLDOWN;
+        g.meleeAnimTimer = 0.35f;
+        g.meleeActive = true;
+    }
+    // Keep meleeActive true for the first 0.15s of animation
+    if (g.meleeAnimTimer <= 0.2f && g.meleeActive) g.meleeActive = false;
 
     if (g.shootTimer <= 0 && dist < 400.0f) {
         g.shootTimer = GIANT2_SHOOT_INTERVAL;
@@ -316,7 +332,7 @@ void UpdateGiant2(Giant2& g, float tx, float ty, float dt) {
     }
 }
 
-void DrawGiant2(const Giant2& g) {
+void DrawGiant2(const Giant2& g, float playerX, float playerY) {
     if (g.hp <= 0) return;
     CreateGiant2Texture();
 
@@ -324,6 +340,17 @@ void DrawGiant2(const Giant2& g) {
     Rectangle dst = { g.x, g.y, 64, 64 };
     Vector2 origin = { 32, 32 };
     DrawTexturePro(giant2Tex, src, dst, origin, 0.0f, WHITE);
+
+    // Sword swipe animation
+    if (g.meleeAnimTimer > 0.0f) {
+        float angle = atan2f(playerY - g.y, playerX - g.x) * RAD2DEG;
+        float arcHalf = 45.0f;
+        float alpha = (g.meleeAnimTimer / 0.35f) * 200.0f;
+        if (alpha > 200.0f) alpha = 200.0f;
+        Color swipeColor = { 255, 255, 220, (unsigned char)alpha };
+        DrawRing((Vector2){ g.x, g.y }, 30.0f, GIANT2_MELEE_RANGE,
+                 angle - arcHalf, angle + arcHalf, 16, swipeColor);
+    }
 }
 
 void DrawLevel3Background() {
