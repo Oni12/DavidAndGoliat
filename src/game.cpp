@@ -510,112 +510,25 @@ void DrawMapaMundi(int pathIndex, float progress, bool arrived) {
     CreateMapTerrainTexture();
     DrawTexture(mapTerrainTex, 0, 0, WHITE);
 
-    // ---- Location names on map ----
-    // Jerusalem (reference city, not a destination)
-    DrawCircle(545, 118, 5, (Color){ 200, 180, 120, 200 });
-    DrawCircleLines(545, 118, 5, (Color){ 150, 130, 80, 255 });
-    DrawText("JERUSALEN", 515, 126, 12, (Color){ 80, 55, 30, 200 });
-
-    // Bethlehem
-    DrawCircle(576, 178, 6, (Color){ 255, 220, 100, 255 });
-    DrawCircleLines(576, 178, 6, (Color){ 180, 140, 60, 255 });
-    DrawText("BELEN", 552, 186, 13, (Color){ 80, 55, 30, 255 });
-
-    // Valley of Elah
-    DrawCircle(362, 234, 6, (Color){ 255, 220, 100, 255 });
-    DrawCircleLines(362, 234, 6, (Color){ 180, 140, 60, 255 });
-    DrawText("VALLE DE ELEH", 312, 242, 12, (Color){ 80, 55, 30, 255 });
-
-    // Gath
-    DrawCircle(206, 252, 6, (Color){ 255, 220, 100, 255 });
-    DrawCircleLines(206, 252, 6, (Color){ 180, 140, 60, 255 });
-    DrawText("GAT", 186, 260, 13, (Color){ 80, 55, 30, 255 });
-
-    // Additional reference cities (smaller) 
-    DrawCircle(338, 200, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Azeca", 318, 206, 9, (Color){ 100, 70, 40, 160 });
-    DrawCircle(374, 268, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Socoh", 354, 274, 9, (Color){ 100, 70, 40, 160 });
-    DrawCircle(112, 280, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Asdod", 98, 286, 9, (Color){ 100, 70, 40, 160 });
-    DrawCircle(160, 196, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Ecrón", 146, 202, 9, (Color){ 100, 70, 40, 160 });
-    DrawCircle(515, 350, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Hebrón", 498, 356, 9, (Color){ 100, 70, 40, 160 });
-    DrawCircle(85, 300, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Ascalón", 70, 306, 9, (Color){ 100, 70, 40, 160 });
-    DrawCircle(68, 370, 3, (Color){ 200, 180, 120, 180 });
-    DrawText("Gaza", 54, 376, 9, (Color){ 100, 70, 40, 160 });
-
-    // Region labels
-    DrawText("MAR MEDITERRANEO", 4, 50, 10, (Color){ 180, 210, 235, 120 });
-    DrawText("FILISTIA", 115, 30, 10, (Color){ 130, 100, 60, 100 });
-    DrawText("SEFELA", 270, 90, 10, (Color){ 110, 140, 80, 100 });
-    DrawText("MONTES DE JUDA", 520, 30, 10, (Color){ 90, 120, 65, 100 });
-    DrawText("DESIERTO DE JUDA", 660, 50, 10, (Color){ 140, 120, 85, 100});
-    DrawText("MAR MUERTO", 700, 540, 10, (Color){ 100, 140, 180, 120 });
-
-    // ---- Route path (dotted line following waypoints) ----
-    int segCount = 8;
-    Vector2 waypoints[2][9] = {
-        { {567,275}, {543,283}, {519,293}, {493,301}, {467,305}, {441,312}, {413,319}, {383,326}, {353,331} },
-        { {353,331}, {335,339}, {316,345}, {296,350}, {276,352}, {256,351}, {236,350}, {216,349}, {197,349} }
+    int segCounts[2] = {7, 6};
+    Vector2 waypoints[2][8] = {
+        { {567,273}, {545,270}, {519,270}, {500,283}, {473,301}, {445,310}, {413,319}, {400,290} },
+        { {400,290}, {380,296}, {362,304}, {338,302}, {320,309}, {300,315}, {283,315}, {0,0} }
     };
-    for (int s = 0; s < segCount; s++) {
-        Vector2 a = waypoints[pathIndex][s];
-        Vector2 b = waypoints[pathIndex][s + 1];
-        float segLen = sqrtf((b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y));
-        int dots = (int)(segLen / 4.0f);
-        for (int d = 0; d < dots; d++) {
-            float t = (float)d / dots;
-            float px = a.x + (b.x - a.x) * t;
-            float py = a.y + (b.y - a.y) * t;
-            if ((s * 100 + d) % 3 == 0)
-                DrawPixel((int)px, (int)py, (Color){ 220, 180, 80, 200 });
-        }
-    }
-    // DEBUG: red dots on each waypoint
-    for (int i = 0; i <= segCount; i++) {
-        DrawCircle((int)waypoints[pathIndex][i].x, (int)waypoints[pathIndex][i].y, 5, RED);
-    }
 
-    // ---- Destination glow ----
-    if (arrived) {
-        Vector2 dst = (pathIndex == 0) ? (Vector2){ 353, 331 } : (Vector2){ 197, 349 };
-        float pulse = 0.15f + sinf(GetTime() * 4.5f) * 0.12f;
-        DrawCircle((int)dst.x, (int)dst.y, 18, (Color){ 255, 220, 100, (unsigned char)(pulse * 255) });
-        DrawCircleLines((int)dst.x, (int)dst.y, 18, (Color){ 255, 200, 60, (unsigned char)(pulse * 200) });
-    }
-
-    // ---- Player character icon ----
-    float seg = progress * segCount;
+    float seg = progress * segCounts[pathIndex];
     int idx = (int)seg;
     float frac = seg - idx;
-    if (idx >= segCount) { idx = segCount; frac = 0; }
-    float ppx = waypoints[pathIndex][idx].x + (waypoints[pathIndex][idx + 1].x - waypoints[pathIndex][idx].x) * frac;
-    float ppy = waypoints[pathIndex][idx].y + (waypoints[pathIndex][idx + 1].y - waypoints[pathIndex][idx].y) * frac;
+    if (idx >= segCounts[pathIndex]) { idx = segCounts[pathIndex]; frac = 0; }
 
-    DrawCircle((int)ppx, (int)ppy, 8, (Color){ 45, 130, 210, 255 });
-    DrawCircleLines((int)ppx, (int)ppy, 8, (Color){ 25, 85, 175, 255 });
-    DrawCircle((int)ppx, (int)ppy, 4, (Color){ 180, 210, 250, 200 });
-    // Tiny "head" on character
-    DrawCircle((int)ppx, (int)ppy - 4, 3, (Color){ 220, 195, 160, 255 });
-
-    // ---- Bottom bar ----
-    DrawRectangle(0, 550, SCREEN_WIDTH, 50, (Color){ 0, 0, 0, 140 });
-    if (arrived) {
-        DrawText("Presiona ENTER para continuar",
-            SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER para continuar", 16) / 2,
-            562, 16, COL_GOLD);
-    } else {
-        DrawText("Viajando...",
-            SCREEN_WIDTH / 2 - MeasureText("Viajando...", 16) / 2,
-            562, 16, (Color){ 255, 247, 231, 200 });
+    for (int i = 0; i <= idx; i++) {
+        DrawCircle((int)waypoints[pathIndex][i].x, (int)waypoints[pathIndex][i].y, 5, RED);
     }
-
-    // ---- Title ----
-    DrawText("Tierra de Israel", SCREEN_WIDTH / 2 - MeasureText("Tierra de Israel", 18) / 2, 4, 18, (Color){ 220, 200, 170, 230 });
-    DrawText("Tierra de Israel", SCREEN_WIDTH / 2 - MeasureText("Tierra de Israel", 18) / 2 + 1, 5, 18, (Color){ 60, 45, 25, 100 });
+    if (idx < segCounts[pathIndex]) {
+        float px = waypoints[pathIndex][idx].x + (waypoints[pathIndex][idx + 1].x - waypoints[pathIndex][idx].x) * frac;
+        float py = waypoints[pathIndex][idx].y + (waypoints[pathIndex][idx + 1].y - waypoints[pathIndex][idx].y) * frac;
+        DrawCircle((int)px, (int)py, 5, RED);
+    }
 }
 
 void DrawMenu(int sel) {

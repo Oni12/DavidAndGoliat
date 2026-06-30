@@ -68,7 +68,7 @@ int main() {
     bool transActive = false;
     float transAlpha = 0.0f;
     int transDir = 1;
-    bool transStartGame = false;
+    bool transToHistoria = false;
     bool transToNivel1 = false;
     bool transToLevel2 = false;
     bool transToVicHist = false;
@@ -94,8 +94,8 @@ int main() {
             if (transDir == 1 && transAlpha >= 1.0f) {
                 transAlpha = 1.0f;
                 transDir = -1;
-                if (transStartGame) {
-                    StopMusicStream(menuMusic);
+                if (transToHistoria) {
+                    StopMusicStream(level3Music);
                     PlayMusicStream(historiaMusic);
                     player = CreatePlayer();
                     InitBushes(bushes, BUSH_COUNT);
@@ -106,7 +106,7 @@ int main() {
                     historiaPage = 0;
                     for (int i = 0; i < AMMO_MAX; i++) playerProjs[i].active = false;
                     state = HISTORIA;
-                    transStartGame = false;
+                    transToHistoria = false;
                 } else if (transToNivel1) {
                     StopMusicStream(level3Music);
                     PlayMusicStream(dialogMusic);
@@ -176,10 +176,13 @@ int main() {
                 }
                 if (IsKeyPressed(KEY_ENTER)) {
                     if (menuSelection == 0) {
-                        transActive = true;
-                        transDir = 1;
-                        transAlpha = 0.0f;
-                        transStartGame = true;
+                        StopMusicStream(menuMusic);
+                        PlayMusicStream(level3Music);
+                        mapaPathIndex = 0;
+                        nextAfterMap = 0;
+                        mapaProgress = 0.0f;
+                        mapaArrived = false;
+                        state = MAPA_MUNDI;
                     } else if (menuSelection == 1) {
                         state = INSTRUCCIONES;
                     } else if (menuSelection == 2) {
@@ -375,15 +378,28 @@ int main() {
                         mapaArrived = true;
                     }
                 } else if (IsKeyPressed(KEY_ENTER)) {
-                    transActive = true;
-                    transDir = 1;
-                    transAlpha = 0.0f;
-                    if (nextAfterMap == 1) {
-                        transToNivel1 = true;
-                    } else if (nextAfterMap == 2) {
-                        transToLevel2 = true;
+                    if (nextAfterMap == 0) {
+                        if (mapaPathIndex == 0) {
+                            mapaPathIndex = 1;
+                            mapaProgress = 0.0f;
+                            mapaArrived = false;
+                        } else {
+                            transActive = true;
+                            transDir = 1;
+                            transAlpha = 0.0f;
+                            transToHistoria = true;
+                        }
                     } else {
-                        transToNivel3Intro = true;
+                        transActive = true;
+                        transDir = 1;
+                        transAlpha = 0.0f;
+                        if (nextAfterMap == 1) {
+                            transToNivel1 = true;
+                        } else if (nextAfterMap == 2) {
+                            transToLevel2 = true;
+                        } else {
+                            transToNivel3Intro = true;
+                        }
                     }
                 }
                 break;
