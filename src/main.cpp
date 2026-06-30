@@ -48,6 +48,9 @@ int main() {
     jonathan.hp = JONATHAN_MAX_HP;
     Giant2 giant2 = CreateGiant2();
     Texture2D davidPortrait = CreateDavidPortrait();
+    Texture2D youtubeImg = LoadTexture("assets/imagen1.png");
+    Texture2D gatImg = LoadTexture("assets/gat.png");
+    Texture2D cuevaImg = LoadTexture("assets/cueva.png");
 
     int menuSelection = 0;
     int historiaPage = 0;
@@ -76,6 +79,8 @@ int main() {
     bool transToLevel3 = false;
     bool transToNivel3Outro = false;
     bool transToMapa = false;
+    bool historiaTabActive = false;
+    bool cuevaTabActive = false;
 
     for (int i = 0; i < AMMO_MAX; i++) playerProjs[i].active = false;
 
@@ -195,14 +200,10 @@ int main() {
                 if (IsKeyPressed(KEY_ENTER)) {
                     historiaPage++;
                     if (historiaPage >= 5) {
-                        StopMusicStream(historiaMusic);
-                        PlayMusicStream(level3Music);
-                        historiaPage = 0;
-                        mapaPathIndex = 0;
-                        nextAfterMap = 1;
-                        mapaProgress = 0.0f;
-                        mapaArrived = false;
-                        state = MAPA_MUNDI;
+                        transActive = true;
+                        transDir = 1;
+                        transAlpha = 0.0f;
+                        transToNivel1 = true;
                     }
                 }
                 break;
@@ -371,6 +372,36 @@ int main() {
                 break;
 
             case MAPA_MUNDI:
+                if (historiaTabActive) {
+                    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
+                        historiaTabActive = false;
+                    }
+                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        float mx = (float)GetMouseX(), my = (float)GetMouseY();
+                        Rectangle linkRect = { SCREEN_WIDTH / 2 - 166, 480, 380, 16 };
+                        if (CheckCollisionPointRec((Vector2){mx, my}, linkRect)) {
+                            system("start \"\" \"https://www.youtube.com/watch?v=k-heTusuUx0\"");
+                        } else {
+                            historiaTabActive = false;
+                        }
+                    }
+                    break;
+                }
+                if (cuevaTabActive) {
+                    if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_ESCAPE)) {
+                        cuevaTabActive = false;
+                    }
+                    if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                        float mx = (float)GetMouseX(), my = (float)GetMouseY();
+                        Rectangle cLinkRect = { SCREEN_WIDTH / 2 - 166, 480, 380, 16 };
+                        if (CheckCollisionPointRec((Vector2){mx, my}, cLinkRect)) {
+                            system("start \"\" \"https://www.youtube.com/watch?v=-lWtpuh4XWo\"");
+                        } else {
+                            cuevaTabActive = false;
+                        }
+                    }
+                    break;
+                }
                 if (!mapaArrived) {
                     mapaProgress += dt * 0.35f;
                     if (mapaProgress >= 1.0f) {
@@ -400,6 +431,17 @@ int main() {
                         } else {
                             transToNivel3Intro = true;
                         }
+                    }
+                }
+                if (mapaArrived && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    float mx = (float)GetMouseX(), my = (float)GetMouseY();
+                    Rectangle imgRect = { 150, 150, 150, 150 };
+                    if (CheckCollisionPointRec((Vector2){mx, my}, imgRect)) {
+                        historiaTabActive = true;
+                    }
+                    Rectangle cuevaRect = { 425, 350, 100, 86 };
+                    if (CheckCollisionPointRec((Vector2){mx, my}, cuevaRect)) {
+                        cuevaTabActive = true;
                     }
                 }
                 break;
@@ -520,7 +562,7 @@ int main() {
                 break;
 
             case HISTORIA:
-                DrawHistoria(historiaPage, 5);
+                DrawHistoria(historiaPage, 6);
                 break;
 
             case INSTRUCCIONES:
@@ -605,6 +647,54 @@ int main() {
 
             case MAPA_MUNDI:
                 DrawMapaMundi(mapaPathIndex, mapaProgress, mapaArrived);
+                if (youtubeImg.id > 0) {
+                    Rectangle srcRect = { 0, 0, (float)youtubeImg.width, (float)youtubeImg.height };
+                    Rectangle dstRect = { 150, 150, 150, 150 };
+                    DrawTexturePro(youtubeImg, srcRect, dstRect, (Vector2){ 0, 0 }, 0, WHITE);
+                }
+                if (cuevaImg.id > 0) {
+                    Rectangle cSrc = { 0, 0, (float)cuevaImg.width, (float)cuevaImg.height };
+                    Rectangle cDst = { 425, 350, 100, 86 };
+                    DrawTexturePro(cuevaImg, cSrc, cDst, (Vector2){ 0, 0 }, 0, WHITE);
+                }
+                if (historiaTabActive) {
+                    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 200 });
+                    DrawRectangle(85, 100, SCREEN_WIDTH - 170, SCREEN_HEIGHT - 200, (Color){ 255, 247, 231, 255 });
+                    DrawRectangle(85, 100, SCREEN_WIDTH - 170, 3, (Color){ 214, 181, 95, 255 });
+                    DrawText("GAT: LA TIERRA DE GIGANTES", SCREEN_WIDTH / 2 - MeasureText("GAT: LA TIERRA DE GIGANTES", 24) / 2, 120, 24, (Color){ 50, 40, 36, 255 });
+                    DrawText("Según las recientes excavaciones arqueológicas, esta imponente", SCREEN_WIDTH / 2 - 290, 155, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("fortaleza era cinco veces más grande que la Jerusalén de su época.", SCREEN_WIDTH / 2 - 290, 175, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("Gat fue temida y conocida como la \"tierra de gigantes\", hogar de los", SCREEN_WIDTH / 2 - 290, 195, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("descendientes de los Anaquim y Refaitas. Aquí es donde nació y creció", SCREEN_WIDTH / 2 - 290, 215, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("Goliat, el mítico campeón cuya colosal armadura infundía terror,", SCREEN_WIDTH / 2 - 290, 235, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("antes de enfrentar su destino ante David.", SCREEN_WIDTH / 2 - 290, 255, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("EVIDENCIA ARQUEOLOGICA", SCREEN_WIDTH / 2 - MeasureText("EVIDENCIA ARQUEOLOGICA", 18) / 2, 300, 18, (Color){ 214, 181, 95, 255 });
+                    if (gatImg.id > 0) {
+                        Rectangle gSrc = { 0, 0, (float)gatImg.width, (float)gatImg.height };
+                        Rectangle gDst = { SCREEN_WIDTH / 2 - 75, 325, 150, 150 };
+                        DrawTexturePro(gatImg, gSrc, gDst, (Vector2){ 0, 0 }, 0, WHITE);
+                    }
+                    DrawText("https://www.youtube.com/watch?v=k-heTusuUx0", SCREEN_WIDTH / 2 - 166, 480, 14, (Color){ 60, 100, 200, 255 });
+                    DrawText("Presiona ENTER o ESC para cerrar", SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER o ESC para cerrar", 14) / 2, 520, 14, (Color){ 214, 181, 95, 255 });
+                }
+                if (cuevaTabActive) {
+                    DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 200 });
+                    DrawRectangle(85, 100, SCREEN_WIDTH - 170, SCREEN_HEIGHT - 200, (Color){ 255, 247, 231, 255 });
+                    DrawRectangle(85, 100, SCREEN_WIDTH - 170, 3, (Color){ 214, 181, 95, 255 });
+                    DrawText("Cueva de Adulam: El Refugio de David", SCREEN_WIDTH / 2 - MeasureText("Cueva de Adulam: El Refugio de David", 24) / 2, 120, 24, (Color){ 50, 40, 36, 255 });
+                    DrawText("\"Yéndose luego David de allí, huyó a la cueva", SCREEN_WIDTH / 2 - MeasureText("\"Yéndose luego David de allí, huyó a la cueva", 18) / 2, 180, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("de Adulam; y cuando sus hermanos y toda la", SCREEN_WIDTH / 2 - MeasureText("de Adulam; y cuando sus hermanos y toda la", 18) / 2, 200, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("casa de su padre lo supieron, vinieron allí a él.\"", SCREEN_WIDTH / 2 - MeasureText("casa de su padre lo supieron, vinieron allí a él.\"", 18) / 2, 220, 18, (Color){ 50, 40, 36, 255 });
+                    DrawText("(1 Samuel 22:1, RVR1960)", SCREEN_WIDTH / 2 - MeasureText("(1 Samuel 22:1, RVR1960)", 16) / 2, 248, 16, (Color){ 100, 80, 70, 255 });
+                    DrawText("EVIDENCIA ARQUEOLOGICA", SCREEN_WIDTH / 2 - MeasureText("EVIDENCIA ARQUEOLOGICA", 18) / 2, 300, 18, (Color){ 214, 181, 95, 255 });
+                    if (cuevaImg.id > 0) {
+                        Rectangle cvSrc = { 0, 0, (float)cuevaImg.width, (float)cuevaImg.height };
+                        Rectangle cvDst = { SCREEN_WIDTH / 2 - 75, 325, 150, 150 };
+                        DrawTexturePro(cuevaImg, cvSrc, cvDst, (Vector2){ 0, 0 }, 0, WHITE);
+                    }
+                    DrawText("https://www.youtube.com/watch?v=-lWtpuh4XWo", SCREEN_WIDTH / 2 - 166, 480, 14, (Color){ 60, 100, 200, 255 });
+                    DrawText("Presiona ENTER o ESC para cerrar", SCREEN_WIDTH / 2 - MeasureText("Presiona ENTER o ESC para cerrar", 14) / 2, 520, 14, (Color){ 214, 181, 95, 255 });
+                }
                 break;
 
             case NIVEL_3_INTRO:
@@ -665,6 +755,9 @@ int main() {
     UnloadTileTextures();
     UnloadMapTerrain();
     if (davidPortrait.id > 0) UnloadTexture(davidPortrait);
+    if (youtubeImg.id > 0) UnloadTexture(youtubeImg);
+    if (gatImg.id > 0) UnloadTexture(gatImg);
+    if (cuevaImg.id > 0) UnloadTexture(cuevaImg);
     CloseWindow();
     return 0;
 }
