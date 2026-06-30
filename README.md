@@ -27,7 +27,7 @@ cd DavidAndGoliat
 Compilar con un solo comando:
 
 ```bash
-g++ src/main.cpp src/game.cpp src/player.cpp src/level1.cpp src/level2.cpp src/level3.cpp src/tiles.cpp src/utils.cpp -o "MiProyecto.exe" -I"C:/msys64/ucrt64/include" -L"C:/msys64/ucrt64/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -std=c++17
+g++ src/main.cpp src/game.cpp src/player.cpp src/level1.cpp src/level2.cpp src/level3.cpp src/tiles.cpp src/utils.cpp -o "David_Goliat.exe" -I"C:/msys64/ucrt64/include" -L"C:/msys64/ucrt64/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -std=c++17
 ```
 
 O ejecutar directamente el archivo `build.bat` incluido en el repositorio:
@@ -39,7 +39,7 @@ O ejecutar directamente el archivo `build.bat` incluido en el repositorio:
 ## Ejecutar
 
 ```bash
-./MiProyecto.exe
+./David_Goliat.exe
 ```
 
 ## Niveles
